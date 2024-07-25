@@ -1,0 +1,50 @@
+<?php
+/** @var \Razoyo\CarProfile\Block\CarProfile $block */
+$selectedCar = $block->getSelectedCar();
+$carList = $block->getCarList();
+$selectedCarId = $block->getSelectedCarId();
+?>
+
+<div class="car-profile">
+    <?php if ($selectedCar): ?>
+        <div class="current-car">
+            <h2><?= __('Your Current Car') ?></h2>
+            <img src="<?= $block->escapeUrl($selectedCar['image']) ?>" alt="<?= $block->escapeHtml($selectedCar['name']) ?>" />
+            <p><?= $block->escapeHtml($selectedCar['description']) ?></p>
+        </div>
+    <?php elseif ($selectedCarId): ?>
+        <div class="current-car">
+            <p><?= __('Your selected car (ID: %1) is currently unavailable. Please try refreshing the page or select a different car.', $block->escapeHtml($selectedCarId)) ?></p>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($block->hasCarList()): ?>
+        <form action="<?= $block->getUrl('carprofile/account/save') ?>" method="post">
+            <fieldset class="fieldset">
+                <legend class="legend"><span><?= __('Choose Your Car') ?></span></legend>
+                <div class="field car-model">
+                    <label for="car_model" class="label"><span><?= __('Car Model') ?></span></label>
+                    <div class="control">
+                        <select name="car_model" id="car_model">
+                            <option value=""><?= __('-- Please Select --') ?></option>
+                            <?php foreach ($carList as $value => $car): ?>
+                                <option value="<?= $block->escapeHtmlAttr($value) ?>"<?= $selectedCarId == $value ? ' selected="selected"' : '' ?>>
+                                    <?= $block->escapeHtml($car['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="actions-toolbar">
+                <div class="primary">
+                    <button type="submit" class="action submit primary" title="<?= $block->escapeHtmlAttr(__('Save')) ?>">
+                        <span><?= __('Save') ?></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    <?php else: ?>
+        <p><?= __('Unable to retrieve car list. Please try again later.') ?></p>
+    <?php endif; ?>
+</div>
